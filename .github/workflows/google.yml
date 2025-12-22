@@ -11,7 +11,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+      
+      - name: Debug Info
+        run: |
+          echo "GitHub SHA: $GITHUB_SHA"
+          echo "GCP Project: $GCP_PROJECT"
+          echo "Region: $REGION"
+          echo "Docker images before build:"
+          docker images
+      
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
