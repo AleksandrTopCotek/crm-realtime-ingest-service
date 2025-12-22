@@ -5,10 +5,18 @@ import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const logger = new Logger();
+
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
-  const port = Number(configService.get('PORT') ?? 3000);
+  if (!configService.get('PORT')) {
+    logger.error('Env was not set properly');
+  }
+  const port = Number(configService.get<number>('PORT') ?? 3000);
+  const apiPrefix = configService.get<string>('API_PREFIX', 'api');
+  app.setGlobalPrefix(apiPrefix);
   await app.listen(port);
+  const url = await app.getUrl();
   logger.log(`Ingest service is started at ${port}`);
+  logger.log(`URL is ${url}`);
 }
 bootstrap();
