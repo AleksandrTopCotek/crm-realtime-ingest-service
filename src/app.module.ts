@@ -2,14 +2,28 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { HandleConfigServiceService } from './shared/services/handle-config-service/handle-config-service.service';
+import { BonusesModule } from './bonuses/bonuses.module';
+import { IngestServiceService } from './ingest-service/ingest-service.service';
+import { IngestServiceModule } from './ingest-service/ingest-service.module';
+import { BonusCreditModule } from './bonus-credit/bonus-credit.module';
+import { BonusApplyModule } from './bonus-apply/bonus-apply.module';
+import { DepositModule } from './deposit/deposit.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    BonusesModule,
+    IngestServiceModule,
+    BonusCreditModule,
+    BonusApplyModule,
+    DepositModule,
+    ProfileModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, HandleConfigServiceService, IngestServiceService],
 })
 export class AppModule {}
