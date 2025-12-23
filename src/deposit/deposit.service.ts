@@ -4,7 +4,7 @@ import { UpdateDepositDto } from './dto/update-deposit.dto';
 
 @Injectable()
 export class DepositService {
-  create(createDepositDto: CreateDepositDto) {
+  create(_createDepositDto: CreateDepositDto) {
     return 'This action adds a new deposit';
   }
 
@@ -16,7 +16,7 @@ export class DepositService {
     return `This action returns a #${id} deposit`;
   }
 
-  update(id: number, updateDepositDto: UpdateDepositDto) {
+  update(id: number, _updateDepositDto: UpdateDepositDto) {
     return `This action updates a #${id} deposit`;
   }
 

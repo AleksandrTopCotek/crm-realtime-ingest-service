@@ -1,34 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { DepositService } from './deposit.service';
-import { CreateDepositDto } from './dto/create-deposit.dto';
-import { UpdateDepositDto } from './dto/update-deposit.dto';
+import { MessagePattern, Payload, Ctx, KafkaContext } from '@nestjs/microservices';
+import { SchemaService } from 'src/shared/services/schema/schema.service';
 
 @Controller('deposit')
 export class DepositController {
-  constructor(private readonly depositService: DepositService) {}
-
-  @Post()
-  create(@Body() createDepositDto: CreateDepositDto) {
-    return this.depositService.create(createDepositDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.depositService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.depositService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDepositDto: UpdateDepositDto) {
-    return this.depositService.update(+id, updateDepositDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.depositService.remove(+id);
+  logger = new Logger();
+  constructor(
+    private readonly depositService: DepositService,
+    private readonly schemaService: SchemaService,
+  ) {}
+  @MessagePattern('payment-topic')
+  async handlePayment(@Payload() _message: unknown, @Ctx() context: KafkaContext) {
+    const kafkaMessage = context.getMessage() as unknown as { value: Buffer };
+    const raw = kafkaMessage.value;
+    const schema = await this.schemaService.getSchema('payment');
+    const decoded = schema.fromBuffer(raw);
+    this.logger.log('Received payment:', decoded);
+    this.logger.log(`topic, ${context.getTopic()}`);
   }
 }
