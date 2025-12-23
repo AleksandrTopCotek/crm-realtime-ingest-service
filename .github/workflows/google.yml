@@ -45,8 +45,11 @@ jobs:
       # ====== Build & Push Docker image ======
       - name: Build Docker image
         run: |
-          docker build -t gcr.io/$GCP_PROJECT/ingest-service:$GITHUB_SHA ./ingest-service
-          docker push gcr.io/$GCP_PROJECT/ingest-service:$GITHUB_SHA
+          docker buildx build \
+          --platform linux/amd64 \
+          -t gcr.io/$GCP_PROJECT/ingest-service:$GITHUB_SHA \
+          --push \
+          .
 
       # ====== Echo после билда ======
       - name: Verify Docker Push
