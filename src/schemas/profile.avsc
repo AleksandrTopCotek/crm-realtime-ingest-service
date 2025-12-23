@@ -1,0 +1,588 @@
+{
+  "type": "record",
+  "name": "Profile",
+  "namespace": "hrzn.profile",
+  "fields": [
+    {
+      "name": "player_uuid",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    },
+    {
+      "name": "operator_uuid",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "brand_id",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    },
+    {
+      "name": "type",
+      "type": {
+        "type": "enum",
+        "name": "Type",
+        "symbols": ["CREATE", "UPDATE"]
+      }
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    },
+    {
+      "name": "email",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    },
+    {
+      "name": "completed",
+      "type": "boolean"
+    },
+    {
+      "name": "registration_date",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    },
+    {
+      "name": "creating_date",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "suspend_end_date",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "registration_ip",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "nickname",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "first_name",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "last_name",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "birth_date",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "passport",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "passport_id",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "external_user_id",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "phone_code",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "phone_number",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "phone_number_with_code",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "language",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    },
+    {
+      "name": "currency",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    },
+    {
+      "name": "t_and_c_uuid",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    },
+    {
+      "name": "gender",
+      "type": [
+        "null",
+        {
+          "type": "enum",
+          "name": "Gender",
+          "symbols": ["MALE", "FEMALE"]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "country",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "city",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "address",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "zip",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "affiliate_id",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "btag",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "Status",
+        "symbols": ["INACTIVE", "ACTIVE", "BLOCKED", "SUSPENDED", "COOLOFF"]
+      }
+    },
+    {
+      "name": "status_reason",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "status_comment",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "profile_status_date",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "profile_status_permanent",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "user_agent",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "send_mail",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "marketing_sms",
+      "type": "boolean"
+    },
+    {
+      "name": "marketing_email",
+      "type": "boolean"
+    },
+    {
+      "name": "marketing_snail",
+      "type": "boolean"
+    },
+    {
+      "name": "tailor_made_sms",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "tailor_made_email",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "communication_sms",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "communication_email",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "communication_call",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "temporary_until",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "is_test",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "email_verified",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "phone_number_verified",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "referer",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "time_zone",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "social_network_id",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "social_network_account_id",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "updated",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      }
+    },
+    {
+      "name": "affiliate_id_v2",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "additional_fields",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "string",
+          "avro.java.string": "String"
+        },
+        "avro.java.string": "String"
+      }
+    },
+    {
+      "name": "registration_device",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "Device",
+          "fields": [
+            {
+              "name": "device_type",
+              "type": {
+                "type": "enum",
+                "name": "DeviceType",
+                "symbols": ["DESKTOP", "MOBILE", "TABLET", "OTHER"]
+              }
+            },
+            {
+              "name": "os",
+              "type": [
+                "null",
+                {
+                  "type": "string",
+                  "avro.java.string": "String"
+                }
+              ],
+              "default": null
+            },
+            {
+              "name": "user_agent",
+              "type": [
+                "null",
+                {
+                  "type": "string",
+                  "avro.java.string": "String"
+                }
+              ],
+              "default": null
+            }
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "authorities",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "Authority",
+          "fields": [
+            {
+              "name": "department",
+              "type": {
+                "type": "string",
+                "avro.java.string": "String"
+              }
+            },
+            {
+              "name": "role",
+              "type": {
+                "type": "string",
+                "avro.java.string": "String"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "affiliate_system_name",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "default": null
+    }
+  ]
+}
