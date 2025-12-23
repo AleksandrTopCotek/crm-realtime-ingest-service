@@ -19,4 +19,4 @@ async function bootstrap() {
   logger.log(`Ingest service is started at ${port}`);
   logger.log(`URL is ${url}`);
 }
-bootstrap();
+void bootstrap();

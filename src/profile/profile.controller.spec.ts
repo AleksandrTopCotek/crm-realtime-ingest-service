@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProfileController } from './profile.controller';
 import { ProfileService } from './profile.service';
+import { SchemaService } from 'src/shared/services/schema/schema.service';
 
 describe('ProfileController', () => {
   let controller: ProfileController;
@@ -8,7 +9,15 @@ describe('ProfileController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ProfileController],
-      providers: [ProfileService],
+      providers: [
+        ProfileService,
+        {
+          provide: SchemaService,
+          useValue: {
+            getSchema: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     controller = module.get<ProfileController>(ProfileController);

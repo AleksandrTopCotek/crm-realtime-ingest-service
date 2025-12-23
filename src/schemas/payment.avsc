@@ -1,0 +1,651 @@
+{
+  "type": "record",
+  "name": "Payment",
+  "namespace": "hrzn.payment",
+  "doc": "Events in this topic reflect changes of a payment which ID is set in field 'payment_uuid'",
+  "fields": [
+    {
+      "name": "email",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "User's email address.",
+      "default": null,
+      "example": "krzysztofjurek91@gmail.com"
+    },
+    {
+      "name": "login",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "User's login name.",
+      "default": null,
+      "example": "krzysztofjurek91"
+    },
+    {
+      "name": "language_code",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "User's language code. ISO 639-1.",
+      "default": null,
+      "example": "pl"
+    },
+    {
+      "name": "send_email",
+      "type": "boolean",
+      "doc": "Send an email to the user about this payment or not.",
+      "default": false,
+      "example": true
+    },
+    {
+      "name": "player_uuid",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      },
+      "doc": "User identifier.",
+      "example": "PLAYER-32deccf4-bb98-4d20-8997-e252b9321666"
+    },
+    {
+      "name": "payment_uuid",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      },
+      "doc": "Payment identifier.",
+      "example": "PAYMENT-34c87b2c-cd63-4dfd-9c33-a9fb217ba238"
+    },
+    {
+      "name": "brand_id",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      },
+      "doc": "ID of a brand to which the player belongs.",
+      "example": "lucky_bet"
+    },
+    {
+      "name": "login_session_uuid",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      },
+      "doc": "Authorization session of the payment initiator (can be either player or operator), if the payment was created by API.",
+      "example": "ec703acf-d2d7-4f15-ad1c-3e94d138328e"
+    },
+    {
+      "name": "creation_date",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      },
+      "doc": "Date and time when this event was created, yyyy-MM-dd'T'HH:mm:ss.SSS - ISO 8601.",
+      "example": "2021-10-20T14:03:40.565"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      },
+      "doc": "Date and time of the last update, yyyy-MM-dd'T'HH:mm:ss.SSS - ISO 8601.",
+      "example": "2021-10-20T14:03:41.077"
+    },
+    {
+      "name": "type",
+      "type": {
+        "type": "enum",
+        "name": "Type",
+        "symbols": ["DEPOSIT", "WITHDRAW", "CONFISCATE"]
+      },
+      "doc": "Type of the payment. DEPOSIT is used to increase the user's balance, both WITHDRAW and CONFISCATE to decrease it.",
+      "example": "DEPOSIT"
+    },
+    {
+      "name": "is_adjustment",
+      "type": "boolean",
+      "doc": "Deprecated field, always false."
+    },
+    {
+      "name": "operator_uuid",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "If not null, the payment was initiated by an operator, not by a user. Contains the operator's ID.",
+      "default": null,
+      "example": "OPERATOR-548fa447-dc42-4e75-9574-de6fc0a17024"
+    },
+    {
+      "name": "payment_provider",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Provider (or aggregator) of the payment method which is being used for this payment.",
+      "default": null,
+      "example": "bambora"
+    },
+    {
+      "name": "payment_method",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Payment method which is being used for this payment.",
+      "default": null,
+      "example": "VISA_MASTERCARD"
+    },
+    {
+      "name": "real_payment_method",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Real payment method which is being used for this payment in case if was selected mobile payment but card system was used, like visa or mastercard",
+      "default": null,
+      "example": "VISA_MASTERCARD"
+    },
+    {
+      "name": "payment_account",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Card mask/phone number/email/other identifier in the payment system for the specific payment method selected by the user.",
+      "default": null,
+      "example": "457123******7395"
+    },
+    {
+      "name": "payment_account_external_ref",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Payment account's external ID",
+      "default": null,
+      "example": "0801e25d8fb14a1da7a1afb228963952"
+    },
+    {
+      "name": "amount",
+      "type": {
+        "type": "record",
+        "name": "Money",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "double"
+          },
+          {
+            "name": "currency",
+            "type": {
+              "type": "string",
+              "avro.java.string": "String"
+            }
+          }
+        ]
+      },
+      "doc": "Deprecated field, see amount_exact.",
+      "default": {
+        "amount": 0,
+        "currency": "UNDEFINED"
+      }
+    },
+    {
+      "name": "tag",
+      "type": [
+        "null",
+        {
+          "type": "enum",
+          "name": "Tag",
+          "symbols": [
+            "NORMAL",
+            "CASH_BACK",
+            "TIP",
+            "EXCHANGE",
+            "FEE",
+            "WAGER_LOSS_CASHBACK",
+            "REWARD_PLAN_CASHBACK",
+            "DAILY_CASHBACK",
+            "MONEY_REWARD",
+            "REFUND",
+            "REVERSAL",
+            "RETAIL",
+            "CHARGEBACK",
+            "WITHDRAWAL_WITHOUT_PLAYING",
+            "TERMINAL_CORRECTION",
+            "LUDOMAN_WITHDRAWAL",
+            "REVERSE_EXCHANGE",
+            "RAKEBACK"
+          ],
+          "default": "NORMAL"
+        }
+      ],
+      "doc": "If NORMAL - this is just regular payment. Otherwise - refers to the flow which was a trigger for this payment.",
+      "default": null,
+      "example": "NORMAL"
+    },
+    {
+      "name": "external_ref",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "If not null, contains an identifier of the payment in payment provider's system.",
+      "default": null,
+      "example": "31e7303f-6ed2-4f09-a28b-92600e88b387"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "Status",
+        "symbols": [
+          "CREATED",
+          "APPROVED",
+          "PENDING",
+          "SUBMITTED",
+          "REJECTED",
+          "REFUSED",
+          "COMPLETED",
+          "CHARGEBACK",
+          "CANCELED",
+          "FAILED",
+          "REFUNDED",
+          "REVERSED"
+        ]
+      },
+      "doc": "Payment's status. Statuses REFUSED and FAILED are deprecated.",
+      "example": "COMPLETED"
+    },
+    {
+      "name": "host",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Content of header Origin (if payment was created by API and Origin header was provided).",
+      "default": null,
+      "example": "luckybet.com"
+    },
+    {
+      "name": "ip",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "If payment was created by API, this field contains IP of the initiator.",
+      "default": null,
+      "example": "127.0.0.1"
+    },
+    {
+      "name": "country_code",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "User's country code. ISO 3166-1 alpha-2.",
+      "default": null,
+      "example": "PL"
+    },
+    {
+      "name": "device_hash",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Unique device identifier.",
+      "default": null,
+      "example": "5ea90ec7aac9e3b0a6f60a0b051be678"
+    },
+    {
+      "name": "user_agent",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "User agent identifier.",
+      "default": null,
+      "example": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
+    },
+    {
+      "name": "amount_barrier_reached",
+      "type": "boolean",
+      "doc": "Deprecated field.",
+      "default": false
+    },
+    {
+      "name": "user_additions",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "utm_source, utm_campaign, clickid, m_click etc.",
+      "default": null,
+      "example": "{\"promo\":\"8cabf54bc5a83801\",\"saff_id\":\"{saff_id}\",\"utm_source\":\"{utm_source}\",\"utm_campaign\":\"{utm_campaign}\",\"utm_medium\":\"{utm_medium}\",\"utm_content\":\"{utm_content}\",\"utm_term\":\"{utm_term}\",\"clickid\":\"{clickid}\",\"pid\":\"{pid}\",\"m_click\":\"70a3beddd593e04a093d6b9173d23faa15667fc858a244a7149afb6a80e55414\"}"
+    },
+    {
+      "name": "comments",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Reason of rejection or other comments from the operator or payment system.",
+      "default": null,
+      "example": "Transaction is declined by bank."
+    },
+    {
+      "name": "reason_details",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Details of the reason",
+      "default": null,
+      "example": "Provider response : {'message': 'Payment is declined'}"
+    },
+    {
+      "name": "internal_reason",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Internal details of the reason. don't expose it",
+      "default": null,
+      "example": "Provider response : {'message': 'Payment is declined'}"
+    },
+    {
+      "name": "external_reason",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "External details of the reason",
+      "default": null,
+      "example": "Bug, payment can't be approved"
+    },
+    {
+      "name": "additional_fields",
+      "type": [
+        "null",
+        {
+          "type": "map",
+          "values": {
+            "type": "string",
+            "avro.java.string": "String"
+          },
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Additional fields required by payment method, e.g. cardholder name/CVV/expiry date/etc.",
+      "default": null,
+      "example": {
+        "customer.locale": "ru",
+        "isMobile": "true"
+      }
+    },
+    {
+      "name": "balance_after",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "User's balance after it was changed by this payment. If null - balance is not changed yet.",
+      "default": null,
+      "example": "EUR 50.06"
+    },
+    {
+      "name": "is_balance_affected",
+      "type": ["null", "boolean"],
+      "doc": "If true - balance is already affected by this transaction (even if it is not completed yet).",
+      "default": null,
+      "example": true
+    },
+    {
+      "name": "audit_data",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Additional info from the payment provider. Content depends on the payment provider.",
+      "default": null,
+      "example": "DEPOSIT for PLAYER-e737f90f-c342-463c-8ef8-88aceb174f7f"
+    },
+    {
+      "name": "amount_exact",
+      "type": {
+        "type": "record",
+        "name": "HrznMoney",
+        "namespace": "hrzn",
+        "fields": [
+          {
+            "name": "amount",
+            "type": {
+              "type": "string",
+              "avro.java.string": "String"
+            },
+            "example": "28.99"
+          },
+          {
+            "name": "currency",
+            "type": {
+              "type": "string",
+              "avro.java.string": "String"
+            },
+            "example": "EUR"
+          }
+        ]
+      },
+      "doc": "Amount and currency of the payment."
+    },
+    {
+      "name": "is_first",
+      "type": ["null", "boolean"],
+      "doc": "If true, this is the player's first payment of this type. If null, check events with other statuses.",
+      "default": null,
+      "example": true
+    },
+    {
+      "name": "player_registration_ip",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Player's registration IP. Should be defined only in events with status CREATED.",
+      "default": null,
+      "example": "127.0.0.1"
+    },
+    {
+      "name": "player_registration_country",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Country code of player's registration IP. Should be defined only in events with status CREATED. ISO 3166-1 alpha-2.",
+      "default": null,
+      "example": "GE"
+    },
+    {
+      "name": "profile_country_code",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Player profile country code based on phone number. Should be defined only in events with status CREATED. ISO 3166-1 alpha-2.",
+      "default": null,
+      "example": "GE"
+    },
+    {
+      "name": "initiator_role",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Transaction initiator role for Buddy2Buddy payments. Can be AGENT or PLAYER. Should be defined only in events with status CREATED.",
+      "default": null,
+      "example": "AGENT"
+    },
+    {
+      "name": "notes",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Notes which operator creates before approving or rejecting payment on front-end",
+      "default": null,
+      "example": "Note from operator"
+    },
+    {
+      "name": "purpose",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Purpose of Replenishment (deposits with Replenishment payment method and manual aggregator). This field is set by an operator and supports only values, which are configured per brand. Default value - payment.balance.adjustment",
+      "default": null,
+      "example": "payment.balance.adjustment"
+    },
+    {
+      "name": "transition_type",
+      "type": [
+        "null",
+        {
+          "type": "enum",
+          "name": "TransitionType",
+          "symbols": ["AUTOMATIC", "MANUAL"]
+        }
+      ],
+      "doc": "Transition type field defines how the transaction was processed. It can be proceeded automatically by system/awd or manually by operator/player.",
+      "default": null,
+      "example": "MANUAL"
+    },
+    {
+      "name": "transition_author",
+      "type": [
+        "null",
+        {
+          "type": "enum",
+          "name": "TransitionAuthor",
+          "symbols": ["AWD", "OPERATOR", "PLATFORM", "EXTERNAL_SYSTEM", "PLAYER"]
+        }
+      ],
+      "doc": "Transition author field defines the author who processed the transaction.",
+      "default": null,
+      "example": "AWD"
+    },
+    {
+      "name": "first_completed_date",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      ],
+      "doc": "Date and time when payment was completed for the first time, yyyy-MM-dd'T'HH:mm:ss.SSS - ISO 8601.",
+      "default": null,
+      "example": "2021-10-20T14:03:40.565"
+    },
+    {
+      "name": "actual_amount_confiscated",
+      "type": ["null", "hrzn.HrznMoney"],
+      "doc": "Actual confiscated amount value. Use for confiscate type with refund or chargeback tag.",
+      "default": null
+    },
+    {
+      "name": "is_external_origin",
+      "type": ["null", "boolean"],
+      "doc": "If true, then transaction is fully handling by external system. If value is false or empty - then platform handling this transaction.",
+      "default": null,
+      "example": true
+    }
+  ]
+}

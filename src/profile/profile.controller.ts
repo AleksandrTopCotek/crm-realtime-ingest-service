@@ -1,34 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { ProfileService } from './profile.service';
-import { CreateProfileDto } from './dto/create-profile.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import { MessagePattern, Payload, Ctx, KafkaContext } from '@nestjs/microservices';
+import { SchemaService } from 'src/shared/services/schema/schema.service';
 
-@Controller('profile')
+@Controller('Profile')
 export class ProfileController {
-  constructor(private readonly profileService: ProfileService) {}
+  logger = new Logger();
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly schemaService: SchemaService,
+  ) {}
 
-  @Post()
-  create(@Body() createProfileDto: CreateProfileDto) {
-    return this.profileService.create(createProfileDto);
-  }
+  @MessagePattern('profile-topic')
+  async handlePayment(@Payload() _message: unknown, @Ctx() context: KafkaContext) {
+    // Kafka payload лежит в context.getMessage().value (Buffer)
+    const kafkaMessage = context.getMessage() as unknown as { value: Buffer };
+    const raw = kafkaMessage.value;
+    const schema = await this.schemaService.getSchema('profile');
+    const decoded = schema.fromBuffer(raw);
 
-  @Get()
-  findAll() {
-    return this.profileService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.profileService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
-    return this.profileService.update(+id, updateProfileDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.profileService.remove(+id);
+    this.logger.log('Received profile:', decoded);
+    this.logger.log(`topic, ${context.getTopic()}`);
   }
 }
