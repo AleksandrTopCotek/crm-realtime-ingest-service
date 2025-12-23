@@ -10,6 +10,7 @@ import { BonusCreditModule } from './bonus-credit/bonus-credit.module';
 import { BonusApplyModule } from './bonus-apply/bonus-apply.module';
 import { DepositModule } from './deposit/deposit.module';
 import { ProfileModule } from './profile/profile.module';
+import { SchemaService } from './shared/services/schema/schema.service';
 
 @Module({
   imports: [
@@ -37,6 +38,6 @@ import { ProfileModule } from './profile/profile.module';
     ProfileModule,
   ],
   controllers: [AppController],
-  providers: [AppService, HandleConfigServiceService, IngestServiceService],
+  providers: [AppService, HandleConfigServiceService, IngestServiceService, SchemaService],
 })
 export class AppModule {}
