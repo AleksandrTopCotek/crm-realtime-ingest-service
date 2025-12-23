@@ -47,7 +47,7 @@ jobs:
         run: |
           docker buildx build \
           --platform linux/amd64 \
-          -t gcr.io/$GCP_PROJECT/ingest-service:$GITHUB_SHA \
+          -t crm-realtime/$GCP_PROJECT/ingest-service:$GITHUB_SHA \
           --push \
           .
 
@@ -61,7 +61,7 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ingest-service \
-            --image gcr.io/$GCP_PROJECT/ingest-service:$GITHUB_SHA \
+            --image crm-realtime/$GCP_PROJECT/ingest-service:$GITHUB_SHA \
             --region $REGION \
             --platform managed \
             --allow-unauthenticated
