@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class HandleConfigService {
+  logger = new Logger();
   envPort = process.env.PORT;
   envKFUsername = process.env.KF_USERNAME;
   envKFPassword = process.env.KF_PASSWORD;
@@ -14,6 +15,18 @@ export class HandleConfigService {
   envKFBroker3 = process.env.KF_BROKER_THREE;
   getConfig(Key: ConfigKey): string | undefined {
     return this[Key];
+  }
+  configExisting(): boolean {
+    const keys = Object.keys(this)?.filter((k) => k.startsWith('env')) as ConfigKey[];
+    for (const key of keys) {
+      const value = this.getConfig(key);
+
+      if (!value) {
+        this.logger.error(`${keys[key]} is ${value}`);
+        return false;
+      }
+    }
+    return true;
   }
 }
 type ConfigKey = Extract<keyof HandleConfigService, `env${string}`>;
