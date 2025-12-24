@@ -12,6 +12,7 @@ import { DepositModule } from './deposit/deposit.module';
 import { ProfileModule } from './profile/profile.module';
 import { SchemaService } from './shared/services/schema/schema.service';
 import { HandleConfigModule } from './shared/services/handle-config-service/handle-config-service.module';
+import { GcpAuthModule } from './gcp-auth/gcp-auth.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { HandleConfigModule } from './shared/services/handle-config-service/hand
     DepositModule,
     ProfileModule,
     HandleConfigModule,
+    GcpAuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, HandleConfigService, IngestServiceService, SchemaService],
