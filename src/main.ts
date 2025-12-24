@@ -12,12 +12,19 @@ async function bootstrap() {
   const handleConfig = app.get(HandleConfigService);
   const configService = app.get(ConfigService);
   if (!handleConfig.configExisting()) {
-    logger.error('Configs were not set properly!');
-    return;
+    throw new Error('Configs were not set properly!');
   }
   app.connectMicroservice<KafkaOptions>({
     transport: Transport.KAFKA,
-    options: { client: { brokers: [handleConfig.envKFBroker1 as string] } },
+    options: {
+      client: {
+        brokers: [
+          handleConfig.getConfig('envKFBroker1'),
+          handleConfig.getConfig('envKFBroker2'),
+          handleConfig.getConfig('envKFBroker3'),
+        ],
+      },
+    },
   });
 
   if (!configService.get('PORT')) {

@@ -13,8 +13,12 @@ export class HandleConfigService {
   envKFBroker1 = process.env.KF_BROKER_ONE;
   envKFBroker2 = process.env.KF_BROKER_TWO;
   envKFBroker3 = process.env.KF_BROKER_THREE;
-  getConfig(Key: ConfigKey): string | undefined {
-    return this[Key];
+  getConfig(Key: ConfigKey): string {
+    const value = this[Key];
+    if (!value) {
+      throw new Error(`Config ${Key} is not set`);
+    }
+    return value;
   }
   configExisting(): boolean {
     const keys = Object.keys(this)?.filter((k) => k.startsWith('env')) as ConfigKey[];
