@@ -14,6 +14,7 @@ export class HandleConfigService {
   envKFBroker2 = process.env.KF_BROKER_TWO;
   envKFBroker3 = process.env.KF_BROKER_THREE;
   envKFsslMech = process.env.KF_SSL_MECH;
+  envGCPrunAud = process.env.GCP_RUN_AUDIENCE;
   getConfig(Key: ConfigKey): string {
     const value = this[Key];
     if (!value) {
