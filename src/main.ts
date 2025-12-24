@@ -23,6 +23,15 @@ async function bootstrap() {
           handleConfig.getConfig('envKFBroker2'),
           handleConfig.getConfig('envKFBroker3'),
         ],
+        ssl: true,
+        sasl: {
+          mechanism: 'scram-sha-256',
+          username: handleConfig.getConfig('envKFUsername'),
+          password: handleConfig.getConfig('envKFPassword'),
+        },
+      },
+      consumer: {
+        groupId: handleConfig.getConfig('envKFConsumerGroupName'),
       },
     },
   });
@@ -30,10 +39,10 @@ async function bootstrap() {
   if (!configService.get('PORT')) {
     logger.error('Env was not set properly');
   }
-  logger.warn(`handleConfig ${handleConfig.envKFBroker1}`);
   const port = Number(configService.get<number>('PORT') ?? 3000);
   const apiPrefix = configService.get<string>('API_PREFIX', 'api');
   app.setGlobalPrefix(apiPrefix);
+  await app.startAllMicroservices();
   await app.listen(port);
   const url = await app.getUrl();
   logger.log(`Ingest service is started at ${port}`);

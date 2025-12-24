@@ -13,6 +13,7 @@ export class HandleConfigService {
   envKFBroker1 = process.env.KF_BROKER_ONE;
   envKFBroker2 = process.env.KF_BROKER_TWO;
   envKFBroker3 = process.env.KF_BROKER_THREE;
+  envKFsslMech = process.env.KF_SSL_MECH;
   getConfig(Key: ConfigKey): string {
     const value = this[Key];
     if (!value) {
