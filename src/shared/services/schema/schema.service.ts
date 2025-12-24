@@ -12,7 +12,7 @@ export class SchemaService {
       const schemaPath = path.join(__dirname, '..', 'schemas', `${schemaName}.avsc`);
       const file = await fs.readFile(schemaPath, 'utf8');
       const schemaJson: unknown = JSON.parse(file);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+
       this.schemaCache[schemaName] = parse(schemaJson);
     }
     return this.schemaCache[schemaName];

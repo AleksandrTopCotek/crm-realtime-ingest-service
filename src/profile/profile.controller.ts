@@ -13,7 +13,6 @@ export class ProfileController {
 
   @MessagePattern('profile-topic')
   async handlePayment(@Payload() _message: unknown, @Ctx() context: KafkaContext) {
-    // Kafka payload лежит в context.getMessage().value (Buffer)
     const kafkaMessage = context.getMessage() as unknown as { value: Buffer };
     const raw = kafkaMessage.value;
     const schema = await this.schemaService.getSchema('profile');
