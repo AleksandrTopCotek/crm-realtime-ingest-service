@@ -4,7 +4,7 @@ import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HandleConfigService } from './shared/services/handle-config-service/handle-config-service.service';
 import { KafkaOptions, Transport } from '@nestjs/microservices';
-import { GcpAuthGuard } from './gcp-auth/gcp-auth.guard';
+//import { GcpAuthGuard } from './gcp-auth/gcp-auth.guard';
 
 async function bootstrap() {
   const logger = new Logger();
@@ -14,8 +14,8 @@ async function bootstrap() {
 
     const handleConfig = app.get(HandleConfigService);
     const configService = app.get(ConfigService);
-    const gcpAuthGuard = app.get(GcpAuthGuard);
-    app.useGlobalGuards(gcpAuthGuard);
+    //const gcpAuthGuard = app.get(GcpAuthGuard);
+    //app.useGlobalGuards(gcpAuthGuard);
     if (!handleConfig.configExisting()) {
       throw new Error('Configs were not set properly!');
     }
