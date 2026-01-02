@@ -12,7 +12,7 @@ jobs:
       GCP_PROJECT: veli-report
       REGION: europe-west1
       REPOSITORY: crm-realtime
-      IMAGE_NAME: ingest-service
+      IMAGE_NAME: static-ip-ingest-service
     steps:
       # ===== Checkout репозитория =====
       - name: Checkout
