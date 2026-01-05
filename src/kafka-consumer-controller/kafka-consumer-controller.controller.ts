@@ -1,16 +1,20 @@
 import { Controller, Logger } from '@nestjs/common';
 import { MessagePattern, Payload, Ctx, KafkaContext } from '@nestjs/microservices';
+import { HandleConfigService } from 'src/shared/services/handle-config-service/handle-config-service.service';
 import { SchemaRegistryService } from 'src/shared/services/schema-registry/schema-registry.service';
 
-const TOPIC_SPORT_ROUND = process.env.KF_SPORT_ROUND_TOPIC_NAME ?? 'vegasnova_hrzn05_prod_tagged_sport_round_data';
-const TOPIC_PROFILE_VERIFICATION_STATE =
-  process.env.KF_PROFILE_VERIFICATION_TOPIC_NAME ?? 'vegasnova_hrzn05_prod_profile_verification_state';
-const TOPIC_BONUS_GAME = process.env.KF_BONUS_GAME_TOPIC_NAME ?? 'vegasnova_hrzn05_prod_converted_bonus_game';
+const TOPIC_SPORT_ROUND = process.env.KF_SPORT_ROUND_TOPIC_NAME ?? '';
+const TOPIC_PROFILE_VERIFICATION_STATE = process.env.KF_PROFILE_VERIFICATION_TOPIC_NAME ?? '';
+const TOPIC_BONUS_GAME = process.env.KF_BONUS_GAME_TOPIC_NAME ?? '';
 
 @Controller()
 export class KafkaConsumerController {
   logger = new Logger();
-  constructor(private readonly schemaRegistry: SchemaRegistryService) {}
+
+  constructor(
+    private readonly schemaRegistry: SchemaRegistryService,
+    private readonly hcs: HandleConfigService,
+  ) {}
 
   @MessagePattern(TOPIC_SPORT_ROUND)
   async handleSportRound(@Payload() _message: unknown, @Ctx() ctx: KafkaContext) {
@@ -51,7 +55,6 @@ export class KafkaConsumerController {
     if (!raw) return;
     const bytes = raw.length;
 
-    // Confluent Avro framing: magic(0) + schemaId(4 bytes BE) + avro payload
     const magic = raw.readUInt8(0);
     const schemaId = magic === 0 && raw.length >= 6 ? raw.readUInt32BE(1) : null;
 

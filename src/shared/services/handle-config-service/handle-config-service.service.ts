@@ -15,6 +15,9 @@ export class HandleConfigService {
   envKFBroker3 = process.env.KF_BROKER_THREE;
   envKFsslMech = process.env.KF_SSL_MECH;
   envGCPrunAud = process.env.GCP_RUN_AUDIENCE;
+  envTopicSportRound = process.env.KF_SPORT_ROUND_TOPIC_NAME;
+  envTopicProfileVerification = process.env.KF_PROFILE_VERIFICATION_TOPIC_NAME;
+  envTopicBonusGameName = process.env.KF_BONUS_GAME_TOPIC_NAME;
   getConfig(Key: ConfigKey): string {
     const value = this[Key];
     if (!value) {
