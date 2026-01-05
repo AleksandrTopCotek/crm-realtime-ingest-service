@@ -50,8 +50,10 @@ export class SchemaRegistryService {
 
   private async fetchSchemaById(schemaId: number): Promise<string> {
     const urls = this.getRegistryUrls();
-    const authUser = process.env.SCHEMA_REGISTRY_USERNAME ?? '';
-    const authPass = process.env.SCHEMA_REGISTRY_PASSWORD ?? '';
+    // Schema Registry часто защищён BasicAuth; если отдельные креды не заданы,
+    // пробуем использовать Kafka creds (как в вашем сообщении от Kafka-разработчиков).
+    const authUser = process.env.SCHEMA_REGISTRY_USERNAME ?? process.env.KF_USERNAME ?? '';
+    const authPass = process.env.SCHEMA_REGISTRY_PASSWORD ?? process.env.KF_PASSWORD ?? '';
     const headers: Record<string, string> = { Accept: 'application/vnd.schemaregistry.v1+json' };
     if (authUser && authPass) {
       const token = Buffer.from(`${authUser}:${authPass}`, 'utf8').toString('base64');
