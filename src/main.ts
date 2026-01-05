@@ -20,24 +20,44 @@ async function bootstrap() {
     if (!handleConfig.configExisting()) {
       throw new Error('Configs were not set properly!');
     }
+
+    const groupId = handleConfig.getConfig('envKFConsumerGroupName');
+    if (groupId.includes('*')) {
+      throw new Error(
+        `KF_CONS_GROUP_NAME must be an explicit name like 'vegasnova_ingest_api' (no '*'). Got '${groupId}'`,
+      );
+    }
+    if (!groupId.startsWith('vegasnova_')) {
+      throw new Error(`KF_CONS_GROUP_NAME must start with 'vegasnova_'. Got '${groupId}'`);
+    }
+
+    const brokers = [
+      handleConfig.getConfig('envKFBroker1'),
+      handleConfig.getConfig('envKFBroker2'),
+      handleConfig.getConfig('envKFBroker3'),
+    ].filter(Boolean);
+
+    const mechanismEnv = (handleConfig.getConfig('envKFSSL') ?? '').toLowerCase();
+    const ssl = (handleConfig.getConfig('envKFSecProt') ?? '').toUpperCase() === 'SASL_SSL';
+    const username = handleConfig.getConfig('envKFUsername');
+    const password = handleConfig.getConfig('envKFPassword');
+    const sasl =
+      mechanismEnv === 'plain'
+        ? ({ mechanism: 'plain', username, password } as const)
+        : mechanismEnv === 'scram-sha-512'
+          ? ({ mechanism: 'scram-sha-512', username, password } as const)
+          : ({ mechanism: 'scram-sha-256', username, password } as const);
+
     app.connectMicroservice<KafkaOptions>({
       transport: Transport.KAFKA,
       options: {
         client: {
-          brokers: [
-            handleConfig.getConfig('envKFBroker1'),
-            handleConfig.getConfig('envKFBroker2'),
-            handleConfig.getConfig('envKFBroker3'),
-          ],
-          ssl: true,
-          sasl: {
-            mechanism: 'scram-sha-256',
-            username: handleConfig.getConfig('envKFUsername'),
-            password: handleConfig.getConfig('envKFPassword'),
-          },
+          brokers,
+          ssl,
+          sasl,
         },
         consumer: {
-          groupId: handleConfig.getConfig('envKFConsumerGroupName'),
+          groupId,
         },
       },
     });
