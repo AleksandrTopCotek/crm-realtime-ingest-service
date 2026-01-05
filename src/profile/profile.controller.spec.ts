@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProfileController } from './profile.controller';
 import { ProfileService } from './profile.service';
 import { SchemaService } from 'src/shared/services/schema/schema.service';
+import { SchemaRegistryService } from 'src/shared/services/schema-registry/schema-registry.service';
 
 describe('ProfileController', () => {
   let controller: ProfileController;
@@ -15,6 +16,12 @@ describe('ProfileController', () => {
           provide: SchemaService,
           useValue: {
             getSchema: jest.fn(),
+          },
+        },
+        {
+          provide: SchemaRegistryService,
+          useValue: {
+            decodeConfluentAvro: jest.fn(),
           },
         },
       ],
