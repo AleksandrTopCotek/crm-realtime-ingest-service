@@ -13,6 +13,7 @@ import { ProfileModule } from './profile/profile.module';
 import { SchemaService } from './shared/services/schema/schema.service';
 import { HandleConfigModule } from './shared/services/handle-config-service/handle-config-service.module';
 import { GcpAuthModule } from './gcp-auth/gcp-auth.module';
+import { KafkaConsumerControllerModule } from './kafka-consumer-controller/kafka-consumer-controller.module';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { GcpAuthModule } from './gcp-auth/gcp-auth.module';
     ClientsModule.registerAsync([
       {
         imports: [HandleConfigModule],
-        name: process.env.KF_TOPIC_NAME as string,
+        name: 'KAFKA_TOPIC', //process.env.KF_TOPIC_NAME as string,
         inject: [HandleConfigService],
         useFactory: (cfg: HandleConfigService) => {
           const brokers = [cfg.envKFBroker1, cfg.envKFBroker2, cfg.envKFBroker3].filter((b): b is string => Boolean(b));
@@ -61,6 +62,7 @@ import { GcpAuthModule } from './gcp-auth/gcp-auth.module';
     ProfileModule,
     HandleConfigModule,
     GcpAuthModule,
+    KafkaConsumerControllerModule,
   ],
   controllers: [AppController],
   providers: [AppService, HandleConfigService, IngestServiceService, SchemaService],
