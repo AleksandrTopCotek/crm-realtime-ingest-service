@@ -4,7 +4,7 @@ import { MessagePattern, Payload, Ctx, KafkaContext } from '@nestjs/microservice
 import { SchemaService } from 'src/shared/services/schema/schema.service';
 import { SchemaRegistryService } from 'src/shared/services/schema-registry/schema-registry.service';
 
-const PAYMENT_TOPIC = process.env.KF_PAYMENT_TOPIC_NAME ?? '';
+const PAYMENT_TOPIC = process.env.KF_PAYMENT_TOPIC_NAME ?? 'vegasnova_hrzn05_prod_converted_payment';
 
 @Controller('deposit')
 export class DepositController {
