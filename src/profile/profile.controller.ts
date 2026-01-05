@@ -4,7 +4,7 @@ import { MessagePattern, Payload, Ctx, KafkaContext } from '@nestjs/microservice
 import { SchemaService } from 'src/shared/services/schema/schema.service';
 import { SchemaRegistryService } from 'src/shared/services/schema-registry/schema-registry.service';
 
-const PROFILE_TOPIC = process.env.KF_EXT_PROFILE_TOPIC_NAME ?? '';
+const PROFILE_TOPIC = process.env.KF_EXT_PROFILE_TOPIC_NAME ?? 'vegasnova_hrzn05_prod_ext_profile';
 
 @Controller('Profile')
 export class ProfileController {
