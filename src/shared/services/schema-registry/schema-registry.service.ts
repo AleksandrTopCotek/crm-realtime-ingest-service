@@ -36,10 +36,10 @@ export class SchemaRegistryService {
   }
 
   private getRegistryUrls(): string[] {
-    const urlsRaw =
-      process.env.SCHEMA_REGISTRY_URLS ??
-      process.env.SCHEMA_REGISTRY_URL ??
-      'https://kafka01-public.prod05.hrzn.io';
+    const urlsRaw = process.env.SCHEMA_REGISTRY_URLS;
+    if (!urlsRaw) {
+      throw new Error(`Schema registry urls is empty`);
+    }
 
     return urlsRaw
       .split(',')
@@ -50,10 +50,8 @@ export class SchemaRegistryService {
 
   private async fetchSchemaById(schemaId: number): Promise<string> {
     const urls = this.getRegistryUrls();
-    // Schema Registry часто защищён BasicAuth; если отдельные креды не заданы,
-    // пробуем использовать Kafka creds (как в вашем сообщении от Kafka-разработчиков).
-    const authUser = process.env.SCHEMA_REGISTRY_USERNAME ?? process.env.KF_USERNAME ?? '';
-    const authPass = process.env.SCHEMA_REGISTRY_PASSWORD ?? process.env.KF_PASSWORD ?? '';
+    const authUser = process.env.KF_USERNAME ?? '';
+    const authPass = process.env.KF_PASSWORD ?? '';
     const headers: Record<string, string> = { Accept: 'application/vnd.schemaregistry.v1+json' };
     if (authUser && authPass) {
       const token = Buffer.from(`${authUser}:${authPass}`, 'utf8').toString('base64');
@@ -82,5 +80,3 @@ export class SchemaRegistryService {
     throw new Error(`Failed to fetch schema id=${schemaId} from any Schema Registry URL: ${String(lastErr)}`);
   }
 }
-
-
