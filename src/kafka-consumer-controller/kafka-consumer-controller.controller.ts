@@ -19,11 +19,7 @@ export class KafkaConsumerController {
       const raw = kafkaMessage.value;
       if (!raw) return;
 
-      const text = raw.toString('utf8');
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const data = JSON.parse(text);
-
-      this.logger.log(data);
+      this.logger.log(raw);
     }
     this.logger.log(`Sport round topic '${ctx.getTopic()}', bytes=${bytes}`);
   }
@@ -37,11 +33,7 @@ export class KafkaConsumerController {
       const raw = kafkaMessage.value;
       if (!raw) return;
 
-      const text = raw.toString('utf8');
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const data = JSON.parse(text);
-
-      this.logger.log(data);
+      this.logger.log(raw);
     }
     this.logger.log(`Profile verification state topic '${ctx.getTopic()}', bytes=${bytes}`);
   }
@@ -53,12 +45,7 @@ export class KafkaConsumerController {
     if (bytes > 0) {
       const raw = kafkaMessage.value;
       if (!raw) return;
-
-      const text = raw.toString('utf8');
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const data = JSON.parse(text);
-
-      this.logger.log(data);
+      this.logger.log(raw);
     }
 
     this.logger.log(`Prod converted bonus game topic '${ctx.getTopic()}', bytes=${bytes}`);
