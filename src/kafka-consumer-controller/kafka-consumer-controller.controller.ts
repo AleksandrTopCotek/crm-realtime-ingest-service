@@ -5,8 +5,7 @@ const TOPIC_SPORT_ROUND = process.env.KF_SPORT_ROUND_TOPIC_NAME ?? 'vegasnova_hr
 const TOPIC_PROFILE_VERIFICATION_STATE =
   process.env.KF_PROFILE_VERIFICATION_TOPIC_NAME ?? 'vegasnova_hrzn05_prod_profile_verification_state';
 const TOPIC_BONUS_GAME = process.env.KF_BONUS_GAME_TOPIC_NAME ?? 'vegasnova_hrzn05_prod_converted_bonus_game';
-const TOPIC_PAYMENT = 'vegasnova_hrzn05_prod_converted_payment';
-const TOPIC_PROFILE = 'vegasnova_hrzn05_prod_ext_profile';
+
 @Controller()
 export class KafkaConsumerController {
   logger = new Logger();
@@ -15,6 +14,17 @@ export class KafkaConsumerController {
   handleSportRound(@Payload() _message: unknown, @Ctx() ctx: KafkaContext) {
     const kafkaMessage = ctx.getMessage() as unknown as { value?: Buffer };
     const bytes = kafkaMessage.value?.length ?? 0;
+
+    if (bytes > 0) {
+      const raw = kafkaMessage.value;
+      if (!raw) return;
+
+      const text = raw.toString('utf8');
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const data = JSON.parse(text);
+
+      this.logger.log(data);
+    }
     this.logger.log(`Sport round topic '${ctx.getTopic()}', bytes=${bytes}`);
   }
 
@@ -22,6 +32,17 @@ export class KafkaConsumerController {
   handleProfileVerification(@Payload() _message: unknown, @Ctx() ctx: KafkaContext) {
     const kafkaMessage = ctx.getMessage() as unknown as { value?: Buffer };
     const bytes = kafkaMessage.value?.length ?? 0;
+
+    if (bytes > 0) {
+      const raw = kafkaMessage.value;
+      if (!raw) return;
+
+      const text = raw.toString('utf8');
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const data = JSON.parse(text);
+
+      this.logger.log(data);
+    }
     this.logger.log(`Profile verification state topic '${ctx.getTopic()}', bytes=${bytes}`);
   }
 
@@ -29,18 +50,17 @@ export class KafkaConsumerController {
   handleBonusGame(@Payload() _message: unknown, @Ctx() ctx: KafkaContext) {
     const kafkaMessage = ctx.getMessage() as unknown as { value?: Buffer };
     const bytes = kafkaMessage.value?.length ?? 0;
+    if (bytes > 0) {
+      const raw = kafkaMessage.value;
+      if (!raw) return;
+
+      const text = raw.toString('utf8');
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const data = JSON.parse(text);
+
+      this.logger.log(data);
+    }
+
     this.logger.log(`Prod converted bonus game topic '${ctx.getTopic()}', bytes=${bytes}`);
-  }
-  @MessagePattern(TOPIC_PAYMENT)
-  handlePayment(@Payload() _message: unknown, @Ctx() ctx: KafkaContext) {
-    const kafkaMessage = ctx.getMessage() as unknown as { value?: Buffer };
-    const bytes = kafkaMessage.value?.length ?? 0;
-    this.logger.log(`Prod converted payment topic '${ctx.getTopic()}', bytes=${bytes}`);
-  }
-  @MessagePattern(TOPIC_PROFILE)
-  handleProfile(@Payload() _message: unknown, @Ctx() ctx: KafkaContext) {
-    const kafkaMessage = ctx.getMessage() as unknown as { value?: Buffer };
-    const bytes = kafkaMessage.value?.length ?? 0;
-    this.logger.log(`Prod converted profile topic '${ctx.getTopic()}', bytes=${bytes}`);
   }
 }
