@@ -13,6 +13,7 @@ import { SchemaService } from './shared/services/schema/schema.service';
 import { HandleConfigModule } from './shared/services/handle-config-service/handle-config-service.module';
 import { GcpAuthModule } from './gcp-auth/gcp-auth.module';
 import { KafkaConsumerControllerModule } from './kafka-consumer-controller/kafka-consumer-controller.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { KafkaConsumerControllerModule } from './kafka-consumer-controller/kafka
     HandleConfigModule,
     GcpAuthModule,
     KafkaConsumerControllerModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService, HandleConfigService, IngestServiceService, SchemaService],
