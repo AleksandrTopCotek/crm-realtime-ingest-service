@@ -3,6 +3,7 @@ import { DepositController } from './deposit.controller';
 import { DepositService } from './deposit.service';
 import { SchemaService } from 'src/shared/services/schema/schema.service';
 import { SchemaRegistryService } from 'src/shared/services/schema-registry/schema-registry.service';
+import { HandleConfigService } from 'src/shared/services/handle-config-service/handle-config-service.service';
 
 describe('DepositController', () => {
   let controller: DepositController;
@@ -12,6 +13,7 @@ describe('DepositController', () => {
       controllers: [DepositController],
       providers: [
         DepositService,
+        HandleConfigService,
         {
           provide: SchemaService,
           useValue: {
