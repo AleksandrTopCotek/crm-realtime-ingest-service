@@ -19,6 +19,14 @@ export class HandleConfigService {
   envTopicProfileVerification = process.env.KF_PROFILE_VERIFICATION_TOPIC_NAME;
   envTopicBonusGameName = process.env.KF_BONUS_GAME_TOPIC_NAME;
   envWorkerUrl = process.env.WORKER_URL;
+
+  workerEndpoint(pathname: string): string {
+    const base = this.getConfig('envWorkerUrl');
+    const normalizedBase = base.endsWith('/') ? base : `${base}/`;
+    const normalizedPath = pathname.startsWith('/') ? pathname.slice(1) : pathname;
+    return new URL(normalizedPath, normalizedBase).toString();
+  }
+
   getConfig(Key: ConfigKey): string {
     const value = this[Key];
     if (!value) {
@@ -32,7 +40,7 @@ export class HandleConfigService {
       const value = this.getConfig(key);
 
       if (!value) {
-        this.logger.error(`${keys[key]} is ${value}`);
+        this.logger.error(`${key} is ${value}`);
         return false;
       }
     }
