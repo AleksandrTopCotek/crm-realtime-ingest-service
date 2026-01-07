@@ -6,3 +6,5 @@ declare module 'avro-js' {
 
   export function parse(schema: unknown): Type;
 }
+
+
