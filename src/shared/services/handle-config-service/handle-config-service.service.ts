@@ -18,6 +18,7 @@ export class HandleConfigService {
   envTopicSportRound = process.env.KF_SPORT_ROUND_TOPIC_NAME;
   envTopicProfileVerification = process.env.KF_PROFILE_VERIFICATION_TOPIC_NAME;
   envTopicBonusGameName = process.env.KF_BONUS_GAME_TOPIC_NAME;
+  envWorkerUrl = process.env.WORKER_URL;
   getConfig(Key: ConfigKey): string {
     const value = this[Key];
     if (!value) {
