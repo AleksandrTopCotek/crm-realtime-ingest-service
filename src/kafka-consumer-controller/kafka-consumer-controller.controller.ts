@@ -1,5 +1,7 @@
 import { Controller, Logger } from '@nestjs/common';
 import { MessagePattern, Payload, Ctx, KafkaContext } from '@nestjs/microservices';
+import { BonusApplyService } from 'src/bonus-apply/bonus-apply.service';
+import { PaymentService } from 'src/payment/payment.service';
 import { HandleConfigService } from 'src/shared/services/handle-config-service/handle-config-service.service';
 import { SchemaRegistryService } from 'src/shared/services/schema-registry/schema-registry.service';
 
@@ -14,6 +16,8 @@ export class KafkaConsumerController {
   constructor(
     private readonly schemaRegistry: SchemaRegistryService,
     private readonly hcs: HandleConfigService,
+    private readonly paymentService: PaymentService,
+    private readonly bonusService: BonusApplyService,
   ) {}
 
   @MessagePattern(TOPIC_SPORT_ROUND)
@@ -66,18 +70,7 @@ export class KafkaConsumerController {
     try {
       const decoded = await this.schemaRegistry.decodeConfluentAvro(raw);
       const data = JSON.stringify(decoded.decoded);
-      const url = this.hcs.workerEndpoint('/api/bonus');
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-        },
-        body: JSON.stringify({
-          body: data,
-        }),
-      });
-      this.logger.debug(`Worker response: ${res.status} ${res.statusText}`);
-      return;
+      return await this.bonusService.create(data);
     } catch (e) {
       this.logger.error(`Failed to handle bonus_game (schemaId=${schemaId ?? 'n/a'}): ${String(e)}`);
     }
