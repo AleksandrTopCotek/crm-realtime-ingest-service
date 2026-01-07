@@ -66,7 +66,7 @@ export class KafkaConsumerController {
     try {
       const decoded = await this.schemaRegistry.decodeConfluentAvro(raw);
       const data = JSON.stringify(decoded.decoded);
-      await fetch(this.hcs.envWorkerUrl + 'api/bonus', {
+      return await fetch(this.hcs.envWorkerUrl + 'api/bonus', {
         method: 'POST',
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
