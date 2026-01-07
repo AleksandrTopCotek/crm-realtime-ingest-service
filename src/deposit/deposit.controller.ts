@@ -24,20 +24,30 @@ export class DepositController {
 
     // If producer uses Confluent framing, decode via Schema Registry.
     if (raw.length >= 6 && raw.readUInt8(0) === 0) {
-      const { schemaId, decoded } = await this.schemaRegistry.decodeConfluentAvro(raw);
-      this.logger.log(`Received payment (schemaId=${schemaId})`);
+      try {
+        const { schemaId, decoded } = await this.schemaRegistry.decodeConfluentAvro(raw);
+        this.logger.log(`Received payment (schemaId=${schemaId})`);
 
-      this.logger.debug(JSON.stringify(decoded));
-      const data = JSON.stringify(decoded);
-      return await fetch(this.hcs.envWorkerUrl + 'api/bonus', {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-        },
-        body: JSON.stringify({
-          body: data,
-        }),
-      }).then((req) => this.logger.debug(req));
+        this.logger.debug(JSON.stringify(decoded));
+        const data = JSON.stringify(decoded);
+        const url = this.hcs.workerEndpoint('/api/bonus');
+
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+          body: JSON.stringify({
+            body: data,
+          }),
+        });
+
+        this.logger.debug(`Worker response: ${res.status} ${res.statusText}`);
+        return;
+      } catch (e) {
+        this.logger.error(`Failed to handle payment (schema-registry framed): ${String(e)}`);
+        return;
+      }
     }
 
     // Fallback to local .avsc (non-framed Avro)

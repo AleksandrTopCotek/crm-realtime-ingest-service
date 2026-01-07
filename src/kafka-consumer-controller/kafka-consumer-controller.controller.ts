@@ -66,7 +66,8 @@ export class KafkaConsumerController {
     try {
       const decoded = await this.schemaRegistry.decodeConfluentAvro(raw);
       const data = JSON.stringify(decoded.decoded);
-      return await fetch(this.hcs.envWorkerUrl + 'api/bonus', {
+      const url = this.hcs.workerEndpoint('/api/bonus');
+      const res = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
@@ -74,9 +75,11 @@ export class KafkaConsumerController {
         body: JSON.stringify({
           body: data,
         }),
-      }).then((req) => this.logger.debug(req));
+      });
+      this.logger.debug(`Worker response: ${res.status} ${res.statusText}`);
+      return;
     } catch (e) {
-      this.logger.error(`Failed to decode bonus_game (schemaId=${schemaId ?? 'n/a'}): ${String(e)}`);
+      this.logger.error(`Failed to handle bonus_game (schemaId=${schemaId ?? 'n/a'}): ${String(e)}`);
     }
   }
 }
