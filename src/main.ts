@@ -12,7 +12,11 @@ async function bootstrap() {
 
   try {
     const app = await NestFactory.create(AppModule);
-
+    app.enableCors({
+      origin: ['http://localhost:3000', 'https://worker-service-960754412379.europe-west1.run.app'],
+      credentials: true,
+      exposedHeaders: 'set-cookie',
+    });
     const handleConfig = app.get(HandleConfigService);
     const configService = app.get(ConfigService);
     //const gcpAuthGuard = app.get(GcpAuthGuard);
