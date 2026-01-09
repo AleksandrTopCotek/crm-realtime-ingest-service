@@ -1,6 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CreateDepositDto } from './dto/create-deposit.dto';
-
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SchemaRegistryService } from 'src/shared/services/schema-registry/schema-registry.service';
 import { HandleConfigService } from 'src/shared/services/handle-config-service/handle-config-service.service';
@@ -18,10 +16,7 @@ export class DepositService {
     private readonly hcs: HandleConfigService,
     private readonly schemaService: SchemaService,
   ) {}
-  create(_createDepositDto: CreateDepositDto) {
-    void _createDepositDto;
-    return 'This action adds a new deposit';
-  }
+
   private extractPaymentUuid(decoded: unknown): string | undefined {
     if (decoded && typeof decoded === 'object' && 'payment_uuid' in decoded) {
       const value = (decoded as { payment_uuid?: unknown }).payment_uuid;
@@ -29,16 +24,13 @@ export class DepositService {
     }
     return undefined;
   }
-
   private toJsonValue(value: unknown): Prisma.InputJsonValue {
-    // Prisma JSON columns expect a JSON-serializable value.
     try {
       return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
     } catch {
       return {};
     }
   }
-
   async addPaymentEventToDB(paymentUuid: string, decoded: unknown, res: Response) {
     try {
       const responseBody = await res.text().catch(() => '');
@@ -53,38 +45,69 @@ export class DepositService {
           body: responseBody,
         },
       };
-      this.logger.log('Adding data in prisma');
       this.logger.log(payload);
       await this.prisma.events.create({
         data: {
           event_id: paymentUuid,
           payload,
-          status: res.ok ? 'review' : 'error',
+          status: res.ok ? 'review' : 'declined',
           reviewed_at: null,
         },
       });
-
-      this.logger.log('Data added in prisma');
     } catch (e: unknown) {
       this.logger.error(`Error in addPaymentEventToDB - ${String(e)}`);
     }
   }
+
+  async retrieveApprovedPayments() {
+    try {
+      const approvedPayments = await this.prisma.events.findMany({ where: { status: { equals: 'approved' } } });
+      return approvedPayments;
+    } catch (e) {
+      this.logger.log(e);
+    }
+  }
+  async getAllPaymentsToCellExpert() {
+    try {
+      const events = await this.prisma.$transaction(async (tx) => {
+        const events = await tx.events.findMany();
+        this.logger.log(events);
+        const approvedPayments = await this.retrieveApprovedPayments();
+        const now = new Date();
+        if (approvedPayments) {
+          await tx.events_in_cellExpert.createMany({
+            data: approvedPayments.map((p) => ({
+              event_id: p.event_id,
+              status: p.status,
+              payload: p.payload === null ? undefined : (p.payload as Prisma.InputJsonValue),
+              reviewed_at: p.reviewed_at ?? undefined,
+              sent_to_cellExpert_at: now,
+            })),
+          });
+        }
+        return approvedPayments;
+      });
+      return events;
+    } catch (e) {
+      this.logger.error(e);
+    }
+  }
   async findAll() {
-    const events = await this.prisma.events.findMany();
-    this.logger.log(events);
-    return events;
+    try {
+      const events = await this.prisma.events.findMany();
+      return events;
+    } catch (e) {
+      this.logger.error(e);
+    }
   }
   async getKafkaPayment(raw: Buffer<ArrayBufferLike>, context: KafkaContext) {
     try {
       if (raw.length >= 6 && raw.readUInt8(0) === 0) {
         try {
-          const { schemaId, decoded } = await this.schemaRegistry.decodeConfluentAvro(raw);
-          this.logger.log(`Received payment (schemaId=${schemaId})`);
-
+          const { decoded } = await this.schemaRegistry.decodeConfluentAvro(raw);
           this.logger.debug(JSON.stringify(decoded));
           const data = JSON.stringify(decoded);
           const url = this.hcs.workerEndpoint('/api/bonus');
-
           const res = await fetch(url, {
             method: 'POST',
             headers: {
@@ -94,7 +117,6 @@ export class DepositService {
               body: data,
             }),
           });
-
           this.logger.debug(`getKafkaPayment response: ${res.status} ${res.statusText}`);
           const paymentUuid = this.extractPaymentUuid(decoded) ?? randomUUID();
           await this.addPaymentEventToDB(paymentUuid, decoded, res);
@@ -105,12 +127,8 @@ export class DepositService {
         }
       }
 
-      // Fallback to local .avsc (non-framed Avro)
       const schema = await this.schemaService.getSchema('payment');
       const decoded = schema.fromBuffer(raw);
-      this.logger.log('Received payment (local schema)');
-      this.logger.debug(JSON.stringify(decoded));
-      this.logger.log(`topic, ${context.getTopic()}`);
     } catch (e) {
       this.logger.error(`Error- ${e}`);
     }
