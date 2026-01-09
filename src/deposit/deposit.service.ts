@@ -69,7 +69,7 @@ export class DepositService {
   async findAll() {
     const events = await this.prisma.events.findMany();
     this.logger.log(events);
-    return `This action returns all deposit`;
+    return events;
   }
   async getKafkaPayment(raw: Buffer<ArrayBufferLike>, context: KafkaContext) {
     try {
