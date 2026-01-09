@@ -13,7 +13,11 @@ async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
     app.enableCors({
-      origin: ['http://localhost:3000', 'https://worker-service-960754412379.europe-west1.run.app'],
+      origin: [
+        'http://localhost:3000',
+        'http://localhost:8080',
+        'https://worker-service-960754412379.europe-west1.run.app',
+      ],
       credentials: true,
       exposedHeaders: 'set-cookie',
     });
