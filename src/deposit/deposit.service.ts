@@ -54,7 +54,7 @@ export class DepositService {
             }),
           });
 
-          this.logger.debug(`Worker response: ${res.status} ${res.statusText}`);
+          this.logger.debug(`getKafkaPayment response: ${res.status} ${res.statusText}`);
           this.addPaymentEventToDB(res);
           return;
         } catch (e) {
