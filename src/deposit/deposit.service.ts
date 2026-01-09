@@ -53,7 +53,8 @@ export class DepositService {
           body: responseBody,
         },
       };
-
+      this.logger.log('Adding data in prisma');
+      this.logger.log(payload);
       await this.prisma.events.create({
         data: {
           event_id: paymentUuid,
@@ -62,6 +63,8 @@ export class DepositService {
           processed_at: res.ok ? new Date() : null,
         },
       });
+
+      this.logger.log('Data added in prisma');
     } catch (e: unknown) {
       this.logger.error(`Error in addPaymentEventToDB - ${String(e)}`);
     }
