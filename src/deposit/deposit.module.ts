@@ -5,11 +5,11 @@ import { SchemaService } from 'src/shared/services/schema/schema.service';
 import { SchemaRegistryModule } from 'src/shared/services/schema-registry/schema-registry.module';
 import { HandleConfigModule } from 'src/shared/services/handle-config-service/handle-config-service.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { CellExpertModule } from 'src/cell-expert/cell-expert.module';
 
 @Module({
-  imports: [SchemaRegistryModule, HandleConfigModule, PrismaModule, CellExpertModule],
+  imports: [SchemaRegistryModule, HandleConfigModule, PrismaModule],
   controllers: [DepositController],
   providers: [DepositService, SchemaService],
+  exports: [DepositService],
 })
 export class DepositModule {}
