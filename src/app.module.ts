@@ -14,6 +14,7 @@ import { HandleConfigModule } from './shared/services/handle-config-service/hand
 import { GcpAuthModule } from './gcp-auth/gcp-auth.module';
 import { KafkaConsumerControllerModule } from './kafka-consumer-controller/kafka-consumer-controller.module';
 import { PaymentModule } from './payment/payment.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { PaymentModule } from './payment/payment.module';
     GcpAuthModule,
     KafkaConsumerControllerModule,
     PaymentModule,
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [AppService, HandleConfigService, IngestServiceService, SchemaService],
