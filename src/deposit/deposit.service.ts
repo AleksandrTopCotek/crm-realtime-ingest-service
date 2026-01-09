@@ -59,7 +59,7 @@ export class DepositService {
         data: {
           event_id: paymentUuid,
           payload,
-          status: res.ok ? 'review' : 'failed',
+          status: res.ok ? 'review' : 'error',
           reviewed_at: null,
         },
       });
