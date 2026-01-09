@@ -75,13 +75,14 @@ export class DepositService {
         const now = new Date();
         if (approvedPayments) {
           this.logger.debug(`inside if approvedPayments`);
-          return await tx.events_in_cellExpert.createManyAndReturn({
+          return await tx.events_in_cellexpert.createManyAndReturn({
             data: approvedPayments.map((p) => ({
               event_id: p.event_id,
-              status: p.status,
+              status: p.status ?? 'review',
               payload: p.payload === null ? undefined : (p.payload as Prisma.InputJsonValue),
+              created_at: p.created_at ?? now,
               reviewed_at: p.reviewed_at ?? undefined,
-              sent_to_cellExpert_at: now,
+              sent_to_cellexpert_at: now,
             })),
           });
         }
