@@ -1,8 +1,6 @@
-import { Controller, Logger } from '@nestjs/common';
+import { Controller, Get, Logger } from '@nestjs/common';
 import { DepositService } from './deposit.service';
 import { MessagePattern, Payload, Ctx, KafkaContext } from '@nestjs/microservices';
-import { SchemaService } from 'src/shared/services/schema/schema.service';
-import { SchemaRegistryService } from 'src/shared/services/schema-registry/schema-registry.service';
 import { HandleConfigService } from 'src/shared/services/handle-config-service/handle-config-service.service';
 
 const PAYMENT_TOPIC = process.env.KF_PAYMENT_TOPIC_NAME ?? '';
@@ -12,8 +10,6 @@ export class DepositController {
   logger = new Logger();
   constructor(
     private readonly depositService: DepositService,
-    private readonly schemaService: SchemaService,
-    private readonly schemaRegistry: SchemaRegistryService,
     private readonly hcs: HandleConfigService,
   ) {}
   @MessagePattern(PAYMENT_TOPIC)
@@ -21,40 +17,14 @@ export class DepositController {
     const kafkaMessage = context.getMessage() as unknown as { value: Buffer };
     const raw = kafkaMessage.value;
     if (!raw) return;
-
-    // If producer uses Confluent framing, decode via Schema Registry.
-    if (raw.length >= 6 && raw.readUInt8(0) === 0) {
-      try {
-        const { schemaId, decoded } = await this.schemaRegistry.decodeConfluentAvro(raw);
-        this.logger.log(`Received payment (schemaId=${schemaId})`);
-
-        this.logger.debug(JSON.stringify(decoded));
-        const data = JSON.stringify(decoded);
-        const url = this.hcs.workerEndpoint('/api/bonus');
-
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-          },
-          body: JSON.stringify({
-            body: data,
-          }),
-        });
-
-        this.logger.debug(`Worker response: ${res.status} ${res.statusText}`);
-        return;
-      } catch (e) {
-        this.logger.error(`Failed to handle payment (schema-registry framed): ${String(e)}`);
-        return;
-      }
+    return this.depositService.getKafkaPayment(raw, context);
+  }
+  @Get()
+  findAll() {
+    try {
+      return this.depositService.findAll();
+    } catch (e: unknown) {
+      this.logger.error(e);
     }
-
-    // Fallback to local .avsc (non-framed Avro)
-    const schema = await this.schemaService.getSchema('payment');
-    const decoded = schema.fromBuffer(raw);
-    this.logger.log('Received payment (local schema)');
-    this.logger.debug(JSON.stringify(decoded));
-    this.logger.log(`topic, ${context.getTopic()}`);
   }
 }

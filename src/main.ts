@@ -73,7 +73,7 @@ async function bootstrap() {
     const apiPrefix = configService.get<string>('API_PREFIX', 'api');
     app.setGlobalPrefix(apiPrefix);
     await app.listen(port);
-    await app.startAllMicroservices();
+    //await app.startAllMicroservices();
     const url = await app.getUrl();
     logger.log(`Ingest service is started at ${port}`);
     logger.log(`URL is ${url}`);
