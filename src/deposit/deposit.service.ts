@@ -6,6 +6,8 @@ import { SchemaRegistryService } from 'src/shared/services/schema-registry/schem
 import { HandleConfigService } from 'src/shared/services/handle-config-service/handle-config-service.service';
 import { KafkaContext } from '@nestjs/microservices';
 import { SchemaService } from 'src/shared/services/schema/schema.service';
+import { randomUUID } from 'node:crypto';
+import type { Prisma } from '@prisma/client';
 
 @Injectable()
 export class DepositService {
@@ -20,12 +22,48 @@ export class DepositService {
     void _createDepositDto;
     return 'This action adds a new deposit';
   }
-  addPaymentEventToDB(res: Response) {
+  private extractPaymentUuid(decoded: unknown): string | undefined {
+    if (decoded && typeof decoded === 'object' && 'payment_uuid' in decoded) {
+      const value = (decoded as { payment_uuid?: unknown }).payment_uuid;
+      if (typeof value === 'string' && value.trim().length > 0) return value;
+    }
+    return undefined;
+  }
+
+  private toJsonValue(value: unknown): Prisma.InputJsonValue {
+    // Prisma JSON columns expect a JSON-serializable value.
     try {
-      this.logger.log('Insider addPaymentEventToDB');
-      this.logger.log(res);
-    } catch (e) {
-      this.logger.error(`Error- ${e}`);
+      return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+    } catch {
+      return {};
+    }
+  }
+
+  async addPaymentEventToDB(paymentUuid: string, decoded: unknown, res: Response) {
+    try {
+      const responseBody = await res.text().catch(() => '');
+      const payload: Prisma.InputJsonObject = {
+        payment_uuid: paymentUuid,
+        decoded: this.toJsonValue(decoded),
+        worker: {
+          url: res.url,
+          ok: res.ok,
+          status: res.status,
+          statusText: res.statusText,
+          body: responseBody,
+        },
+      };
+
+      await this.prisma.events.create({
+        data: {
+          event_id: paymentUuid,
+          payload,
+          status: res.ok ? 'processed' : 'failed',
+          processed_at: res.ok ? new Date() : null,
+        },
+      });
+    } catch (e: unknown) {
+      this.logger.error(`Error in addPaymentEventToDB - ${String(e)}`);
     }
   }
   async findAll() {
@@ -55,7 +93,8 @@ export class DepositService {
           });
 
           this.logger.debug(`getKafkaPayment response: ${res.status} ${res.statusText}`);
-          this.addPaymentEventToDB(res);
+          const paymentUuid = this.extractPaymentUuid(decoded) ?? randomUUID();
+          await this.addPaymentEventToDB(paymentUuid, decoded, res);
           return;
         } catch (e) {
           this.logger.error(`Failed to handle payment (schema-registry framed): ${String(e)}`);
