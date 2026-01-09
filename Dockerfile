@@ -11,7 +11,8 @@ RUN yarn install --frozen-lockfile
 
 # Копируем весь исходный код
 COPY . .
-
+# Генерация призмы 
+RUN npx prisma generate
 # Сборка проекта
 RUN yarn build
 
