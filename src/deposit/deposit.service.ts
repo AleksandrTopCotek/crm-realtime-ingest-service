@@ -61,21 +61,22 @@ export class DepositService {
 
   async retrieveApprovedPayments() {
     try {
-      const approvedPayments = await this.prisma.events.findMany({ where: { status: { equals: 'approved' } } });
-      return approvedPayments;
+      this.logger.log('retrieveApprovedPayments inside');
+      return await this.prisma.events.findMany({ where: { status: { equals: 'approved' } } });
     } catch (e) {
       this.logger.log(e);
     }
   }
   async getAllPaymentsToCellExpert() {
     try {
-      const events = await this.prisma.$transaction(async (tx) => {
-        const events = await tx.events.findMany();
-        this.logger.log(events);
+      const payments = await this.prisma.$transaction(async (tx) => {
+        this.logger.debug('getAllPaymentsToCellExpert transaction start');
         const approvedPayments = await this.retrieveApprovedPayments();
+        this.logger.debug(`approvedPayments len ${approvedPayments?.length}`);
         const now = new Date();
         if (approvedPayments) {
-          await tx.events_in_cellExpert.createMany({
+          this.logger.debug(`inside if approvedPayments`);
+          return await tx.events_in_cellExpert.createManyAndReturn({
             data: approvedPayments.map((p) => ({
               event_id: p.event_id,
               status: p.status,
@@ -85,9 +86,8 @@ export class DepositService {
             })),
           });
         }
-        return approvedPayments;
       });
-      return events;
+      return payments ?? [];
     } catch (e) {
       this.logger.error(e);
     }
