@@ -33,6 +33,5 @@ model events_in_cellExpert {
   reviewed_at          DateTime?   @db.Timestamp(6)
   sent_to_cellExpert_at DateTime    @db.Timestamp(6)
 
-  @@index([created_at], map: "idx_created_at")
-  @@index([status], map: "idx_status")
+
 }
