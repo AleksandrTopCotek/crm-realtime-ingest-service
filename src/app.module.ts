@@ -15,6 +15,7 @@ import { GcpAuthModule } from './gcp-auth/gcp-auth.module';
 import { KafkaConsumerControllerModule } from './kafka-consumer-controller/kafka-consumer-controller.module';
 import { PaymentModule } from './payment/payment.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { CellExpertModule } from './cell-expert/cell-expert.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { PrismaModule } from './prisma/prisma.module';
     KafkaConsumerControllerModule,
     PaymentModule,
     PrismaModule,
+    CellExpertModule,
   ],
   controllers: [AppController],
   providers: [AppService, HandleConfigService, IngestServiceService, SchemaService],
