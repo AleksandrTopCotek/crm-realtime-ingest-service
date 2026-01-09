@@ -23,12 +23,4 @@ export class DepositController {
       this.logger.error(e);
     }
   }
-  @Get('payments-cellexpert')
-  getAllPaymentsToCellExpert() {
-    try {
-      return this.depositService.getAllPaymentsToCellExpert();
-    } catch (e: unknown) {
-      this.logger.error(e);
-    }
-  }
 }
