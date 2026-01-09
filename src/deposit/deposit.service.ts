@@ -45,7 +45,6 @@ export class DepositService {
           body: responseBody,
         },
       };
-      this.logger.log(payload);
       await this.prisma.events.create({
         data: {
           event_id: paymentUuid,
@@ -105,7 +104,6 @@ export class DepositService {
       if (raw.length >= 6 && raw.readUInt8(0) === 0) {
         try {
           const { decoded } = await this.schemaRegistry.decodeConfluentAvro(raw);
-          this.logger.debug(JSON.stringify(decoded));
           const data = JSON.stringify(decoded);
           const url = this.hcs.workerEndpoint('/api/bonus');
           const res = await fetch(url, {
