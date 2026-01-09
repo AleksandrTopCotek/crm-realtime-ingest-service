@@ -69,7 +69,7 @@ async function bootstrap() {
     if (!configService.get('PORT')) {
       logger.error('Env was not set properly');
     }
-    const port = Number(configService.get<number>('PORT') ?? 9999);
+    const port = Number(configService.get<number>('PORT') ?? 8080);
     const apiPrefix = configService.get<string>('API_PREFIX', 'api');
     app.setGlobalPrefix(apiPrefix);
     await app.listen(port);
